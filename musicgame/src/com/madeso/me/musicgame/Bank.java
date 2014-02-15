@@ -31,9 +31,20 @@ public class Bank implements Disposable {
 	}
 
 	private void playCurrentLevel() {
-		Looper looper = this.levels.get(this.level);
-		looper.play();
-		looper.setVolume(1.0f);
+		for(int i=0; i<=level; ++i){
+			Looper looper = this.levels.get(i);
+			looper.play();
+			looper.setVolume(1.0f);
+		}
+		// System.out.print("Playing ");
+		// System.out.println(level);
+	}
+	private void sileceCurrentLevel() {
+		for(int i=0; i<=level; ++i){
+			levels.get(i).setVolume(0);
+		}
+		// System.out.print("Silencing ");
+		// System.out.println(level);
 	}
 	
 	void randomize() {
@@ -47,7 +58,7 @@ public class Bank implements Disposable {
 			spin += dt * Constants.SPINTIMES;
 		}
 		else {
-			spin += dt * Constants.SPINTIMES_ACTIVE;
+			spin += dt * Constants.SPINTIMES_ACTIVE * (level+1);
 		}
 		while(spin > 1) spin -= 1;
 		
@@ -67,15 +78,15 @@ public class Bank implements Disposable {
 				playCurrentLevel();
 				lifetimer -= Constants.BANKLIFE;
 			}
-				Vector3 diff = new Vector3(pos);
-				if( diff.sub(playerpos).len2() < size*size ) {
-					randomize();
-					touched = true;
-					// game.onhit(this.index);
-					levels.get(level).setVolume(0);
-					if( level > 0 ) --level;
-					pausetimer = Constants.PAUSETIMER;
-				}
+			Vector3 diff = new Vector3(pos);
+			if( diff.sub(playerpos).len2() < size*size ) {
+				randomize();
+				touched = true;
+				// game.onhit(this.index);
+				sileceCurrentLevel();
+				if( level > 0 ) --level;
+				pausetimer = Constants.PAUSETIMER;
+			}
 		}
 		else {
 			pausetimer -= dt;
