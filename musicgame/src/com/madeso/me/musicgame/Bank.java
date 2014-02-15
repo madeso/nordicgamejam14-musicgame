@@ -36,15 +36,15 @@ public class Bank implements Disposable {
 			looper.play();
 			looper.setVolume(1.0f);
 		}
-		// System.out.print("Playing ");
-		// System.out.println(level);
+		System.out.print("Playing ");
+		System.out.println(level);
 	}
 	private void sileceCurrentLevel() {
 		for(int i=0; i<=level; ++i){
 			levels.get(i).setVolume(0);
 		}
-		// System.out.print("Silencing ");
-		// System.out.println(level);
+		System.out.print("Silencing ");
+		System.out.println(level);
 	}
 	
 	void randomize() {
@@ -91,6 +91,7 @@ public class Bank implements Disposable {
 		else {
 			pausetimer -= dt;
 			if( pausetimer < 0.0f ) {
+				lifetimer = 0.0f;
 				playCurrentLevel();
 			}
 		}
