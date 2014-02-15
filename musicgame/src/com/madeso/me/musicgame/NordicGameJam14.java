@@ -45,7 +45,7 @@ public class NordicGameJam14 implements ApplicationListener {
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(1, 1, 10f);
+		cam.position.set(0, 0, 10f);
 		cam.lookAt(0,0,0);
 		cam.near = 0.1f;
 		cam.far = 300f;
@@ -62,13 +62,26 @@ public class NordicGameJam14 implements ApplicationListener {
 		model.dispose();
 	}
 	
+	private static float KeepWithin(float mi, float va, float ma) {
+		if( va > ma ) return ma;
+		if( va < mi ) return mi;
+		return va;
+	}
+	
 	private Vector3 GetTouchPos() {
 		Vector3 touchPos = new Vector3();
 		touchPos.set(Gdx.input.getX(0), Gdx.input.getY(0), 0);
-		cam.unproject(touchPos);
-		System.out.println("x " + Float.toString( touchPos.x) + " y " + Float.toString(touchPos.y));
+		//cam.unproject(touchPos);
+		touchPos.x = KeepWithin(-1, 2*(touchPos.x / Gdx.graphics.getWidth()) - 1, 1);
+		touchPos.y = KeepWithin(-1, -2*(touchPos.y / Gdx.graphics.getHeight()) +1, 1);
+		
+		System.out.println("x " + Float.toString( touchPos.x) + " z " + Float.toString(touchPos.y));
+		touchPos.z = 0;
 		return touchPos;
 	}
+	
+	static final float WORLDHEIGHT = 6.0f;
+	static final float WORLDWIDTH = 10.0f;
 
 	@Override
 	public void render() {		
@@ -82,6 +95,8 @@ public class NordicGameJam14 implements ApplicationListener {
 		
 		if( Gdx.input.isTouched(0) ) {
 			Vector3 tp = GetTouchPos();
+			tp.x *= WORLDWIDTH;
+			tp.y *= WORLDHEIGHT;
 			instance.transform.setTranslation(tp);
 		}
 	}
