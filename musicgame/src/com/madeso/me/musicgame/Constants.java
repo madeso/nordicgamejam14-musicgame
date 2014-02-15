@@ -12,4 +12,8 @@ public final class Constants {
 	public static final float PAUSETIMER = 5.0f;
 	public static final float STARTTIME = 3.0f;
 	public static final float STARTRANGE = 3.0f;
+	public static final float SPINTIMES = 1;
+	public static final float SPINTIMES_ACTIVE = 5;
+	public static final float BANKSCALE = 0.9f;
+	public static final float BANKSPEED = 0.40f;
 }

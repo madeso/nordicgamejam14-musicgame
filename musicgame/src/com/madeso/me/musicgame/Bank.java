@@ -16,6 +16,7 @@ public class Bank implements Disposable {
 	Vector3 pos = new Vector3(0,0,0);
 	ModelInstance instance;
 	static Random random = new Random();
+	float spin = 0;
 	
 	float lifetimer = 0;
 	
@@ -38,17 +39,27 @@ public class Bank implements Disposable {
 	}
 	
 	void randomize() {
-		speed = random.nextFloat() * 0.5f - 0.25f;
+		speed = random.nextFloat() * Constants.BANKSPEED -Constants.BANKSPEED/2;
 	}
 	
 	boolean update(float dt, Vector3 playerpos) {
 		boolean touched = false;
+		
+		if( pausetimer > 0 ) {
+			spin += dt * Constants.SPINTIMES;
+		}
+		else {
+			spin += dt * Constants.SPINTIMES_ACTIVE;
+		}
+		while(spin > 1) spin -= 1;
+		
 		posrot += dt * speed;
 		while(posrot > 1) posrot -= 1;
 		while(posrot < 0) posrot += 1;
 		double angle = posrot * Math.PI * 2;
-		pos.x = (float) Math.cos(angle) * Constants.WORLDWIDTH;
-		pos.y = (float) Math.sin(angle) * Constants.WORLDHEIGHT;
+		pos.x = (float) Math.cos(angle) * Constants.WORLDWIDTH * Constants.BANKSCALE;
+		pos.y = (float) Math.sin(angle) * Constants.WORLDHEIGHT * Constants.BANKSCALE;
+		instance.transform.setToRotation(0, 0, 1, (float) (spin * 360));
 		instance.transform.setTranslation(pos);
 		if( pausetimer < 0.0f ) {
 			if( lifetimer <= 0 ) {
@@ -56,7 +67,6 @@ public class Bank implements Disposable {
 				if( diff.sub(playerpos).len2() < size*size ) {
 					randomize();
 					touched = true;
-					System.out.println("Touched bank");
 					lifetimer = Constants.BANKWAIT;
 					// game.onhit(this.index);
 					levels.get(level).setVolume(0);

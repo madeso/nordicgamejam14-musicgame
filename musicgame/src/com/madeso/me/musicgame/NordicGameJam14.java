@@ -55,7 +55,7 @@ public class NordicGameJam14 implements ApplicationListener {
         banks.add(new Bank(bankmodel, new LooperList().add(new LooperMusic("Bank2/walla.mp3"))));
         banks.add(new Bank(bankmodel, new LooperList().add(new LooperMusic("Bank3/highway_sound.mp3"))));
         // banks.add(new Bank(bankmodel));
-        background = new LooperMusic("bank0/pad_drone.mp3");
+        background = new LooperMusic("Bank0/pad_drone.mp3");
         background.play();
 		
 		instance = new ModelInstance(model);
