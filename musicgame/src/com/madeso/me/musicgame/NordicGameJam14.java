@@ -86,12 +86,7 @@ public class NordicGameJam14 implements ApplicationListener {
 		return touchPos;
 	}
 	
-	static final float WORLDHEIGHT = 6.0f;
-	static final float WORLDWIDTH = 10.0f;
-	static final float PLAYERROTSPEED = 2*360.0f;
-	static final float PLAYERSIZESPEED = 2.0f;
-	static final float PLAYERSIZE = 2.0f;
-	static final float BOUNCESPEED = 0.40f; 
+	
 	
 	float playerrot = 0.0f;
 	float playersize = 1.0f;
@@ -99,6 +94,8 @@ public class NordicGameJam14 implements ApplicationListener {
 	Vector3 playerpos = new Vector3(0,0,0);
 	Vector3 lastseenplayer = new Vector3(0,0,0);
 	boolean hasplayer = false;
+	
+	
 	
 	@Override
 	public void render() {		
@@ -108,9 +105,9 @@ public class NordicGameJam14 implements ApplicationListener {
 		
 		float dt = Gdx.graphics.getDeltaTime();
 		
-		playerrot += dt * PLAYERROTSPEED;
+		playerrot += dt * Constants.PLAYERROTSPEED;
 		while(playerrot > 360) playerrot -= 360;
-		playersize += dt * PLAYERSIZESPEED;
+		playersize += dt * Constants.PLAYERSIZESPEED;
 		while(playersize > 1) playersize -= 1;
 
 		modelBatch.begin(cam);
@@ -122,11 +119,11 @@ public class NordicGameJam14 implements ApplicationListener {
 		instance.transform.scale(scale, scale, scale);
 		
 		Vector3 target = GetTouchPos();
-		target.x *= WORLDWIDTH;
-		target.y *= WORLDHEIGHT;
+		target.x *= Constants.WORLDWIDTH;
+		target.y *= Constants.WORLDHEIGHT;
 		
 		if( Gdx.input.isTouched(0) && hasplayer==false ) {
-			float size = PLAYERSIZE;
+			float size = Constants.PLAYERSIZE;
 			if( new Vector3(target).sub(playerpos).len2() < size ) {
 				hasplayer = true;
 			}
@@ -138,7 +135,7 @@ public class NordicGameJam14 implements ApplicationListener {
 			lastseenplayer = new Vector3(playerpos);
 		}
 		else {
-			bouncetimer += dt * BOUNCESPEED;
+			bouncetimer += dt * Constants.BOUNCESPEED;
 			if(bouncetimer > 1) bouncetimer = 1;
 			hasplayer = false;
 			playerpos = new Vector3(lastseenplayer);
