@@ -48,15 +48,18 @@ public class NordicGameJam14 implements ApplicationListener {
         model = loader.loadModel(Gdx.files.internal("player/ship.obj"));
         bankmodel = loader.loadModel(Gdx.files.internal("player/ship.obj"));
         
-        banks.add(new Bank(bankmodel));
-        banks.add(new Bank(bankmodel));
-        banks.add(new Bank(bankmodel));
+        banks.add(new Bank(bankmodel, new LooperSound().add("bank/die.wav").add("bank/score.wav").add("bank/step.wav")));
+        // banks.add(new Bank(bankmodel));
+        // banks.add(new Bank(bankmodel));
 		
 		instance = new ModelInstance(model);
 	}
 
 	@Override
 	public void dispose() {
+		for(Bank b : banks) {
+			b.dispose();
+		}
 		modelBatch.dispose();
 		model.dispose();
 		bankmodel.dispose();

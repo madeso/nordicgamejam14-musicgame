@@ -7,8 +7,9 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Disposable;
 
-public class Bank {
+public class Bank implements Disposable{
 	float posrot = 0.0f;
 	float speed = 1.0f;
 	float size = 2.0f;
@@ -16,10 +17,14 @@ public class Bank {
 	ModelInstance instance;
 	static Random random = new Random();
 	
-	public Bank(Model m) {
+	private Looper looper;
+	
+	public Bank(Model m, Looper l) {
 		instance = new ModelInstance(m);
 		posrot = random.nextFloat();
 		randomize();
+		this.looper = l;
+		this.looper.play();
 	}
 	
 	void randomize() {
@@ -43,6 +48,12 @@ public class Bank {
 
 	public void render(ModelBatch modelBatch, Environment environment) {
 		modelBatch.render(instance, environment);
+	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		looper.dispose();
 	}
 
 }

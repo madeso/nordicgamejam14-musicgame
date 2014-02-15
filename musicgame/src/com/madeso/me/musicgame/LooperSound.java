@@ -13,12 +13,13 @@ public class LooperSound implements Looper, OnCompletionListener {
 	int count = 0;
 	int currentlyplaying = -1;
 	
-	public void add(String path) {
+	public LooperSound add(String path) {
 		Music m = Gdx.audio.newMusic(Gdx.files.internal(path));
 		sound.add(m);
 		m.setOnCompletionListener(this);
 		m.setLooping(false);
 		++count;
+		return this;
 	}
 	
 	@Override
@@ -27,7 +28,9 @@ public class LooperSound implements Looper, OnCompletionListener {
 			int index = -1;
 			do {
 				index = random.nextInt(count);
-			} while(index != currentlyplaying);
+			} while(index == currentlyplaying);
+			System.out.print("Playing ");
+			System.out.println(index);
 			currentlyplaying = index;
 			Music m = sound.get(index);
 			m.play();
