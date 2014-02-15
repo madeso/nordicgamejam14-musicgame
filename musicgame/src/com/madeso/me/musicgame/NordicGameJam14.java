@@ -29,6 +29,8 @@ public class NordicGameJam14 implements ApplicationListener {
 	ArrayList<Bank> banks = new ArrayList<Bank>();
 	
 	Looper background;
+	Looper noise;
+	Looper rumble;
 	
 	@Override
 	public void create() {		
@@ -76,6 +78,14 @@ public class NordicGameJam14 implements ApplicationListener {
         // banks.add(new Bank(bankmodel));
         background = new LooperMusic("Bank0/pad_drone.mp3");
         background.play();
+        
+        noise = new LooperMusic("Bank3/noise.mp3");
+        noise.play();
+        noise.setVolume(0);
+        
+        rumble = new LooperMusic("Bank3/rumble.mp3");
+        rumble.play();
+        rumble.setVolume(0);
 		
 		instance = new ModelInstance(model);
 	}
@@ -86,6 +96,8 @@ public class NordicGameJam14 implements ApplicationListener {
 		model.dispose();
 		bankmodel.dispose();
 		background.dispose();
+		noise.dispose();
+		rumble.dispose();
 		
 		for(Bank b: banks) {
 			b.dispose();
@@ -164,15 +176,23 @@ public class NordicGameJam14 implements ApplicationListener {
 		}
 		
 		float bgvol = 1.0f;
+		int level = 0;
 		for(Bank b:banks) {
+			level = Math.max(level, b.level);
 			if( b.pausetimer > 0 ) {
-				
 			}
 			else {
 				bgvol = 0.0f;
 			}
 		}
 		background.setVolume(bgvol);
+		
+		float noisevol = 0;
+		if( level == 4 ) {
+			noisevol = 1;
+		}
+		noise.setVolume(noisevol);
+		rumble.setVolume(noisevol);
 		
 		if( Gdx.input.isTouched(0) && hasplayer) {
 			playerpos = target;
