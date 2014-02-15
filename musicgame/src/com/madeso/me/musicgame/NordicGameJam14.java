@@ -92,13 +92,10 @@ public class NordicGameJam14 implements ApplicationListener {
 	static final float PLAYERSIZESPEED = 2.0f;
 	static final float PLAYERSIZE = 2.0f;
 	
-	static final float GRAVITY = 0.5f;
-	
 	float playerrot = 0.0f;
 	float playersize = 1.0f;
 	Vector3 playerpos = new Vector3(0,0,0);
 	boolean hasplayer = false;
-	Vector3 speed = new Vector3(0,0,0);
 	
 	@Override
 	public void render() {		
@@ -134,17 +131,15 @@ public class NordicGameJam14 implements ApplicationListener {
 		
 		if( Gdx.input.isTouched(0) && hasplayer) {
 			playerpos = target;
-			speed.x = speed.y = 0;
 		}
 		else {
 			hasplayer = false;
 			Vector3 p = new Vector3(playerpos);
 			float pp = playerpos.len();
 			if( pp > 0.0f ) {
-				p.scl( (pp/(Math.max(WORLDHEIGHT, WORLDWIDTH))) * GRAVITY * dt/pp );
-				speed.add(p);
+				p.scl( (pp/(Math.max(WORLDHEIGHT, WORLDWIDTH))) * 20 * dt/pp );
+				playerpos.sub(p);
 			}
-			playerpos.sub(speed);
  		}
 		
 		instance.transform.setTranslation(playerpos);
