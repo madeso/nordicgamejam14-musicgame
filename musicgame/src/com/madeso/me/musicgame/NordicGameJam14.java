@@ -92,18 +92,13 @@ public class NordicGameJam14 implements ApplicationListener {
 	static final float PLAYERSIZESPEED = 2.0f;
 	static final float PLAYERSIZE = 2.0f;
 	
-	static final float PLAYERFORCELIM = 1.0f;
-	static final float FORCERECHARGE = 2.0f;
+	static final float GRAVITY = 0.1f;
 	
 	float playerrot = 0.0f;
 	float playersize = 1.0f;
 	Vector3 playerpos = new Vector3(0,0,0);
-	float playerforce = 0;
 	boolean hasplayer = false;
-
-	static float ForceScale(float f) {
-		return f * f * f;
-	}
+	Vector3 speed = new Vector3(0,0,0);
 	
 	@Override
 	public void render() {		
@@ -138,23 +133,19 @@ public class NordicGameJam14 implements ApplicationListener {
 		}
 		
 		if( Gdx.input.isTouched(0) && hasplayer) {
-			playerforce += dt;
-			
-			if( playerforce < PLAYERFORCELIM ) {
-				
-			}
-			else {
-				playerforce = PLAYERFORCELIM;
-			}
-			
-			float fs = ForceScale(playerforce / PLAYERFORCELIM);
-			target.scl(1-fs);
 			playerpos = target;
+			speed.x = speed.y = 0;
 		}
 		else {
 			hasplayer = false;
-			playerforce -= dt * FORCERECHARGE;
-			if( playerforce < 0 ) playerforce = 0;
+			Vector3 p = new Vector3(playerpos);
+			float pp = playerpos.len();
+			if( pp > 0.0f ) {
+				p.nor();
+				p.scl(GRAVITY * (dt)/(pp) );
+				speed.add(p);
+				playerpos.sub(speed);
+			}
  		}
 		
 		instance.transform.setTranslation(playerpos);
