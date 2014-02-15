@@ -3,6 +3,7 @@ package com.madeso.me.musicgame;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
@@ -51,8 +53,12 @@ public class NordicGameJam14 implements ApplicationListener {
 		cam.far = 300f;
 		cam.update();
 
-		ModelBuilder modelBuilder = new ModelBuilder();
-		model = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
+		// ModelBuilder modelBuilder = new ModelBuilder();
+		// model = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
+		
+		ObjLoader loader = new ObjLoader();
+        model = loader.loadModel(Gdx.files.internal("player/ship.obj"));
+		
 		instance = new ModelInstance(model);
 	}
 
@@ -75,7 +81,7 @@ public class NordicGameJam14 implements ApplicationListener {
 		touchPos.x = KeepWithin(-1, 2*(touchPos.x / Gdx.graphics.getWidth()) - 1, 1);
 		touchPos.y = KeepWithin(-1, -2*(touchPos.y / Gdx.graphics.getHeight()) +1, 1);
 		
-		System.out.println("x " + Float.toString( touchPos.x) + " z " + Float.toString(touchPos.y));
+		// System.out.println("x " + Float.toString( touchPos.x) + " z " + Float.toString(touchPos.y));
 		touchPos.z = 0;
 		return touchPos;
 	}
