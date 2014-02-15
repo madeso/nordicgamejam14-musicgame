@@ -51,9 +51,18 @@ public class NordicGameJam14 implements ApplicationListener {
         model = loader.loadModel(Gdx.files.internal("player/ship.obj"));
         bankmodel = loader.loadModel(Gdx.files.internal("player/ship.obj"));
         
-        banks.add(new Bank(bankmodel, new LooperList().add(new LooperMusic("Bank1/birds_twitter.mp3"))));
-        banks.add(new Bank(bankmodel, new LooperList().add(new LooperMusic("Bank2/walla.mp3"))));
-        banks.add(new Bank(bankmodel, new LooperList().add(new LooperMusic("Bank3/highway_sound.mp3"))));
+        banks.add(new Bank(bankmodel, new LooperList()
+        .add(new LooperMusic("Bank1/birds_twitter.mp3"))
+        .add(new LooperMusic("Bank1/dog_barking.mp3"))
+        .add(new LooperMusic("Bank1/tools_1.mp3"))
+        .add(new LooperMusic("Bank1/bicycle_pass_by.mp3"))
+        ));
+        banks.add(new Bank(bankmodel, new LooperList()
+        .add(new LooperMusic("Bank2/walla.mp3"))
+        ));
+        banks.add(new Bank(bankmodel, new LooperList()
+        .add(new LooperMusic("Bank3/highway_sound.mp3"))
+        ));
         // banks.add(new Bank(bankmodel));
         background = new LooperMusic("Bank0/pad_drone.mp3");
         background.play();

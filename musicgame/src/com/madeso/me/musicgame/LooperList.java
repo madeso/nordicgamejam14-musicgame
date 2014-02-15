@@ -22,4 +22,9 @@ public class LooperList implements Disposable {
 			l.dispose();
 		}
 	}
+
+	public int count() {
+		// TODO Auto-generated method stub
+		return loops.size();
+	}
 }

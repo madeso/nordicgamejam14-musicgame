@@ -18,12 +18,10 @@ public class Bank implements Disposable {
 	static Random random = new Random();
 	float spin = 0;
 	
-	float lifetimer = 0;
-	
 	int level = 0;
 	LooperList levels;
 	float pausetimer;
-	
+	float lifetimer = 0;
 	public Bank(Model m, LooperList levels) {
 		instance = new ModelInstance(m);
 		posrot = random.nextFloat();
@@ -62,21 +60,22 @@ public class Bank implements Disposable {
 		instance.transform.setToRotation(0, 0, 1, (float) (spin * 360));
 		instance.transform.setTranslation(pos);
 		if( pausetimer < 0.0f ) {
-			if( lifetimer <= 0 ) {
+			lifetimer += dt;
+			if( lifetimer > Constants.BANKLIFE) {
+				randomize();
+				if( level < levels.count()-1 ) ++level;
+				playCurrentLevel();
+				lifetimer -= Constants.BANKLIFE;
+			}
 				Vector3 diff = new Vector3(pos);
 				if( diff.sub(playerpos).len2() < size*size ) {
 					randomize();
 					touched = true;
-					lifetimer = Constants.BANKWAIT;
 					// game.onhit(this.index);
 					levels.get(level).setVolume(0);
 					if( level > 0 ) --level;
 					pausetimer = Constants.PAUSETIMER;
 				}
-			}
-			else {
-				lifetimer -= dt;
-			}
 		}
 		else {
 			pausetimer -= dt;
