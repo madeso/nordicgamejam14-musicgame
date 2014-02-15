@@ -92,7 +92,7 @@ public class NordicGameJam14 implements ApplicationListener {
 	static final float PLAYERSIZESPEED = 2.0f;
 	static final float PLAYERSIZE = 2.0f;
 	
-	static final float GRAVITY = 0.1f;
+	static final float GRAVITY = 0.5f;
 	
 	float playerrot = 0.0f;
 	float playersize = 1.0f;
@@ -141,11 +141,10 @@ public class NordicGameJam14 implements ApplicationListener {
 			Vector3 p = new Vector3(playerpos);
 			float pp = playerpos.len();
 			if( pp > 0.0f ) {
-				p.nor();
-				p.scl(GRAVITY * (dt)/(pp) );
+				p.scl( (pp/(Math.max(WORLDHEIGHT, WORLDWIDTH))) * GRAVITY * dt/pp );
 				speed.add(p);
-				playerpos.sub(speed);
 			}
+			playerpos.sub(speed);
  		}
 		
 		instance.transform.setTranslation(playerpos);
