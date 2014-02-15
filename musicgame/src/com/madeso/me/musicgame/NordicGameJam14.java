@@ -117,7 +117,7 @@ public class NordicGameJam14 implements ApplicationListener {
 		float dt = Gdx.graphics.getDeltaTime();
 		
 		for(Bank bank : banks) {
-			bank.update(dt);
+			bank.update(dt, playerpos);
 		}
 		
 		playerrot += dt * Constants.PLAYERROTSPEED;
