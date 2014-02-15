@@ -91,9 +91,18 @@ public class NordicGameJam14 implements ApplicationListener {
 	static final float PLAYERROTSPEED = 2*360.0f;
 	static final float PLAYERSIZESPEED = 2.0f;
 	
+	static final float PLAYERFORCELIM = 1.0f;
+	static final float FORCERECHARGE = 2.0f;
+	
 	float playerrot = 0.0f;
 	float playersize = 1.0f;
+	Vector3 playerpos = new Vector3(0,0,0);
+	float playerforce = 0;
 
+	static float ForceScale(float f) {
+		return f * f * f;
+	}
+	
 	@Override
 	public void render() {		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -116,11 +125,29 @@ public class NordicGameJam14 implements ApplicationListener {
 		instance.transform.scale(scale, scale, scale);
 		
 		if( Gdx.input.isTouched(0) ) {
-			Vector3 tp = GetTouchPos();
-			tp.x *= WORLDWIDTH;
-			tp.y *= WORLDHEIGHT;
-			instance.transform.setTranslation(tp);
+			Vector3 target = GetTouchPos();
+			target.x *= WORLDWIDTH;
+			target.y *= WORLDHEIGHT;
+			
+			playerforce += dt;
+			
+			if( playerforce < PLAYERFORCELIM ) {
+				
+			}
+			else {
+				playerforce = PLAYERFORCELIM;
+			}
+			
+			float fs = ForceScale(playerforce / PLAYERFORCELIM);
+			target.scl(1-fs);
+			playerpos = target;
 		}
+		else {
+			playerforce -= dt * FORCERECHARGE;
+			if( playerforce < 0 ) playerforce = 0;
+ 		}
+		
+		instance.transform.setTranslation(playerpos);
 	}
 
 	@Override
