@@ -110,8 +110,6 @@ public class NordicGameJam14 implements ApplicationListener {
 		return touchPos;
 	}
 	
-	
-	
 	float playerrot = 0.0f;
 	float playersize = 1.0f;
 	float bouncetimer = 0;

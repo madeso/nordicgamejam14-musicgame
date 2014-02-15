@@ -31,7 +31,7 @@ public class Bank implements Disposable {
 	}
 
 	private void playCurrentLevel() {
-		for(int i=0; i<=level; ++i){
+		for(int i=0; i<=Math.min(level, this.levels.count()-1); ++i){
 			Looper looper = this.levels.get(i);
 			looper.play();
 			looper.setVolume(1.0f);
@@ -40,7 +40,7 @@ public class Bank implements Disposable {
 		System.out.println(level);
 	}
 	private void sileceCurrentLevel() {
-		for(int i=0; i<=level; ++i){
+		for(int i=0; i<=Math.min(level, this.levels.count()-1); ++i){
 			levels.get(i).setVolume(0);
 		}
 		System.out.print("Silencing ");
@@ -74,7 +74,7 @@ public class Bank implements Disposable {
 			lifetimer += dt;
 			if( lifetimer > Constants.BANKLIFE) {
 				randomize();
-				if( level < levels.count()-1 ) ++level;
+				if( level < levels.count() ) ++level;
 				playCurrentLevel();
 				lifetimer -= Constants.BANKLIFE;
 			}
