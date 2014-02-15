@@ -29,8 +29,6 @@ public class LooperSound implements Looper, OnCompletionListener {
 			do {
 				index = random.nextInt(count);
 			} while(index == currentlyplaying);
-			System.out.print("Playing ");
-			System.out.println(index);
 			currentlyplaying = index;
 			Music m = sound.get(index);
 			m.play();

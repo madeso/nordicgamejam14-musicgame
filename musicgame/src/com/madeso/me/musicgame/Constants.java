@@ -6,5 +6,10 @@ public final class Constants {
 	public static final float PLAYERROTSPEED = 2*360.0f;
 	public static final float PLAYERSIZESPEED = 2.0f;
 	public static final float PLAYERSIZE = 2.0f;
-	public static final float BOUNCESPEED = 0.40f; 
+	public static final float BOUNCESPEED = 0.40f;
+	public static final float BANKWAIT = 0.1f;
+	public static final int BANKCOUNT = 3;
+	public static final float PAUSETIMER = 5.0f;
+	public static final float STARTTIME = 3.0f;
+	public static final float STARTRANGE = 3.0f;
 }

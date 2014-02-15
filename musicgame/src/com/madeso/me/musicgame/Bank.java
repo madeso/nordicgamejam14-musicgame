@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
-public class Bank implements Disposable{
+public class Bank implements Disposable {
 	float posrot = 0.0f;
 	float speed = 1.0f;
 	float size = 2.0f;
@@ -17,21 +17,32 @@ public class Bank implements Disposable{
 	ModelInstance instance;
 	static Random random = new Random();
 	
-	private Looper looper;
+	float lifetimer = 0;
 	
-	public Bank(Model m, Looper l) {
+	int level = 0;
+	LooperList levels;
+	float pausetimer;
+	
+	public Bank(Model m, LooperList levels) {
 		instance = new ModelInstance(m);
 		posrot = random.nextFloat();
 		randomize();
-		this.looper = l;
-		this.looper.play();
+		this.levels = levels;
+		this.pausetimer = Constants.STARTTIME + random.nextFloat() * Constants.STARTRANGE;
+	}
+
+	private void playCurrentLevel() {
+		Looper looper = this.levels.get(this.level);
+		looper.play();
+		looper.setVolume(1.0f);
 	}
 	
 	void randomize() {
 		speed = random.nextFloat() * 0.5f - 0.25f;
 	}
 	
-	void update(float dt, Vector3 playerpos) {
+	boolean update(float dt, Vector3 playerpos) {
+		boolean touched = false;
 		posrot += dt * speed;
 		while(posrot > 1) posrot -= 1;
 		while(posrot < 0) posrot += 1;
@@ -39,11 +50,32 @@ public class Bank implements Disposable{
 		pos.x = (float) Math.cos(angle) * Constants.WORLDWIDTH;
 		pos.y = (float) Math.sin(angle) * Constants.WORLDHEIGHT;
 		instance.transform.setTranslation(pos);
-		
-		Vector3 diff = new Vector3(pos);
-		if( diff.sub(playerpos).len2() < size*size ) {
-			randomize();
+		if( pausetimer < 0.0f ) {
+			if( lifetimer <= 0 ) {
+				Vector3 diff = new Vector3(pos);
+				if( diff.sub(playerpos).len2() < size*size ) {
+					randomize();
+					touched = true;
+					System.out.println("Touched bank");
+					lifetimer = Constants.BANKWAIT;
+					// game.onhit(this.index);
+					levels.get(level).setVolume(0);
+					if( level > 0 ) --level;
+					pausetimer = Constants.PAUSETIMER;
+				}
+			}
+			else {
+				lifetimer -= dt;
+			}
 		}
+		else {
+			pausetimer -= dt;
+			if( pausetimer < 0.0f ) {
+				playCurrentLevel();
+			}
+		}
+		
+		return touched;
 	}
 
 	public void render(ModelBatch modelBatch, Environment environment) {
@@ -52,8 +84,7 @@ public class Bank implements Disposable{
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		looper.dispose();
+		levels.dispose();
 	}
 
 }

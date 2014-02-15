@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Disposable;
 
 public class NordicGameJam14 implements ApplicationListener {
 	public PerspectiveCamera cam;
@@ -26,6 +27,8 @@ public class NordicGameJam14 implements ApplicationListener {
 	public Environment environment;
 	
 	ArrayList<Bank> banks = new ArrayList<Bank>();
+	
+	Looper background;
 	
 	@Override
 	public void create() {		
@@ -48,21 +51,26 @@ public class NordicGameJam14 implements ApplicationListener {
         model = loader.loadModel(Gdx.files.internal("player/ship.obj"));
         bankmodel = loader.loadModel(Gdx.files.internal("player/ship.obj"));
         
-        // banks.add(new Bank(bankmodel, new LooperSound().add("bank/die.wav").add("bank/score.wav").add("bank/step.wav")));
-        banks.add(new Bank(bankmodel, new LooperMusic("bank/music.mp3")));
+        banks.add(new Bank(bankmodel, new LooperList().add(new LooperMusic("Bank1/birds_twitter.mp3"))));
+        banks.add(new Bank(bankmodel, new LooperList().add(new LooperMusic("Bank2/walla.mp3"))));
+        banks.add(new Bank(bankmodel, new LooperList().add(new LooperMusic("Bank3/highway_sound.mp3"))));
         // banks.add(new Bank(bankmodel));
+        background = new LooperMusic("bank0/pad_drone.mp3");
+        background.play();
 		
 		instance = new ModelInstance(model);
 	}
 
 	@Override
 	public void dispose() {
-		for(Bank b : banks) {
-			b.dispose();
-		}
 		modelBatch.dispose();
 		model.dispose();
 		bankmodel.dispose();
+		background.dispose();
+		
+		for(Bank b: banks) {
+			b.dispose();
+		}
 	}
 	
 	private static float KeepWithin(float mi, float va, float ma) {
@@ -91,8 +99,7 @@ public class NordicGameJam14 implements ApplicationListener {
 	Vector3 playerpos = new Vector3(0,0,0);
 	Vector3 lastseenplayer = new Vector3(0,0,0);
 	boolean hasplayer = false;
-	
-	
+	boolean locktouch = false;
 	
 	@Override
 	public void render() {		
@@ -103,7 +110,11 @@ public class NordicGameJam14 implements ApplicationListener {
 		float dt = Gdx.graphics.getDeltaTime();
 		
 		for(Bank bank : banks) {
-			bank.update(dt, playerpos);
+			if( bank.update(dt, playerpos) ) {
+				hasplayer = false;
+				locktouch = true;
+				// System.out.println("Loosing player");
+			}
 		}
 		
 		playerrot += dt * Constants.PLAYERROTSPEED;
@@ -126,12 +137,25 @@ public class NordicGameJam14 implements ApplicationListener {
 		target.x *= Constants.WORLDWIDTH;
 		target.y *= Constants.WORLDHEIGHT;
 		
-		if( Gdx.input.isTouched(0) && hasplayer==false ) {
-			float size = Constants.PLAYERSIZE;
-			if( new Vector3(target).sub(playerpos).len2() < size ) {
-				hasplayer = true;
+		if( locktouch == false ) {
+			if( Gdx.input.isTouched(0) && hasplayer==false ) {
+				float size = Constants.PLAYERSIZE;
+				if( new Vector3(target).sub(playerpos).len2() < size ) {
+					hasplayer = true;
+				}
 			}
 		}
+		
+		float bgvol = 1.0f;
+		for(Bank b:banks) {
+			if( b.level == 0 && b.pausetimer > 0 ) {
+				
+			}
+			else {
+				bgvol = 0.0f;
+			}
+		}
+		background.setVolume(bgvol);
 		
 		if( Gdx.input.isTouched(0) && hasplayer) {
 			playerpos = target;
@@ -142,6 +166,9 @@ public class NordicGameJam14 implements ApplicationListener {
 			bouncetimer += dt * Constants.BOUNCESPEED;
 			if(bouncetimer > 1) bouncetimer = 1;
 			hasplayer = false;
+			if( Gdx.input.isTouched(0) == false ) {
+				locktouch = false;
+			}
 			playerpos = new Vector3(lastseenplayer);
 			playerpos.scl( 1-Elastic.easeOut(bouncetimer, 0, 1, 1) );
  		}
