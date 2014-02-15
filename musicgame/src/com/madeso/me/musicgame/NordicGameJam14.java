@@ -1,5 +1,7 @@
 package com.madeso.me.musicgame;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -36,8 +38,11 @@ public class NordicGameJam14 implements ApplicationListener {
 	public CameraInputController inputController;
 	public ModelBatch modelBatch;
 	public Model model;
+	public Model bankmodel;
 	public ModelInstance instance;
 	public Environment environment;
+	
+	ArrayList<Bank> banks = new ArrayList<Bank>();
 	
 	@Override
 	public void create() {		
@@ -58,6 +63,11 @@ public class NordicGameJam14 implements ApplicationListener {
 		
 		ObjLoader loader = new ObjLoader();
         model = loader.loadModel(Gdx.files.internal("player/ship.obj"));
+        bankmodel = loader.loadModel(Gdx.files.internal("player/ship.obj"));
+        
+        banks.add(new Bank(bankmodel));
+        banks.add(new Bank(bankmodel));
+        banks.add(new Bank(bankmodel));
 		
 		instance = new ModelInstance(model);
 	}
@@ -66,6 +76,7 @@ public class NordicGameJam14 implements ApplicationListener {
 	public void dispose() {
 		modelBatch.dispose();
 		model.dispose();
+		bankmodel.dispose();
 	}
 	
 	private static float KeepWithin(float mi, float va, float ma) {
@@ -105,6 +116,10 @@ public class NordicGameJam14 implements ApplicationListener {
 		
 		float dt = Gdx.graphics.getDeltaTime();
 		
+		for(Bank bank : banks) {
+			bank.update(dt);
+		}
+		
 		playerrot += dt * Constants.PLAYERROTSPEED;
 		while(playerrot > 360) playerrot -= 360;
 		playersize += dt * Constants.PLAYERSIZESPEED;
@@ -112,6 +127,9 @@ public class NordicGameJam14 implements ApplicationListener {
 
 		modelBatch.begin(cam);
 		modelBatch.render(instance, environment);
+		for(Bank bank : banks) {
+			bank.render(modelBatch, environment);
+		}
 		modelBatch.end();
 		
 		instance.transform.setToRotation(0, 0, 1, playerrot);
