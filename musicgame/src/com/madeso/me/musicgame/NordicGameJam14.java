@@ -88,16 +88,32 @@ public class NordicGameJam14 implements ApplicationListener {
 	
 	static final float WORLDHEIGHT = 6.0f;
 	static final float WORLDWIDTH = 10.0f;
+	static final float PLAYERROTSPEED = 2*360.0f;
+	static final float PLAYERSIZESPEED = 2.0f;
+	
+	float playerrot = 0.0f;
+	float playersize = 1.0f;
 
 	@Override
 	public void render() {		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		
+		float dt = Gdx.graphics.getDeltaTime();
+		
+		playerrot += dt * PLAYERROTSPEED;
+		while(playerrot > 360) playerrot -= 360;
+		playersize += dt * PLAYERSIZESPEED;
+		while(playersize > 1) playersize -= 1;
 
 		modelBatch.begin(cam);
 		modelBatch.render(instance, environment);
 		modelBatch.end();
+		
+		instance.transform.setToRotation(0, 0, 1, playerrot);
+		float scale = 1.5f + (float) Math.sin(playersize * Math.PI * 2);
+		instance.transform.scale(scale, scale, scale);
 		
 		if( Gdx.input.isTouched(0) ) {
 			Vector3 tp = GetTouchPos();
