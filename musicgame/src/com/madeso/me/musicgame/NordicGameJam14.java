@@ -59,8 +59,8 @@ public class NordicGameJam14 implements ApplicationListener {
 		// model = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
 		
 		ObjLoader loader = new ObjLoader();
-        model = loader.loadModel(Gdx.files.internal("player/ship.obj"));
-        bankmodel = loader.loadModel(Gdx.files.internal("player/ship.obj"));
+        model = loader.loadModel(Gdx.files.internal("player/playerring.obj"));
+        bankmodel = loader.loadModel(Gdx.files.internal("player/playersphere.obj"));
         
         banks.add(new Bank(bankmodel, new LooperList()
         .add(new LooperMusic("Bank1/birds_twitter.mp3"))
@@ -179,8 +179,9 @@ public class NordicGameJam14 implements ApplicationListener {
 		}
 		modelBatch.end();
 		
-		instance.transform.setToRotation(0, 0, 1, playerrot);
-		float scale = 1.5f + (float) Math.sin(playersize * Math.PI * 2);
+		instance.transform.setToRotation(1, 0, 0, 90);
+		instance.transform.rotate(0, 1, 0, playerrot);
+		float scale = Math.abs(Constants.PLAYERBASESCALE + Constants.PLAYERSCALE*(float) Math.sin(playersize * Math.PI * 2));
 		instance.transform.scale(scale, scale, scale);
 		
 		Vector3 target = GetTouchPos();
