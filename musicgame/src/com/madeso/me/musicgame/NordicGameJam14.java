@@ -6,6 +6,8 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -14,10 +16,13 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
 public class NordicGameJam14 implements ApplicationListener {
+	private BitmapFont font;
+	private SpriteBatch fontbatch;
 	public PerspectiveCamera cam;
 	public CameraInputController inputController;
 	public ModelBatch modelBatch;
@@ -32,8 +37,12 @@ public class NordicGameJam14 implements ApplicationListener {
 	Looper noise;
 	Looper rumble;
 	
+	float attract = Constants.ATTRACTTIME + 1;
+	
 	@Override
 	public void create() {		
+		fontbatch = new SpriteBatch();
+		font = new BitmapFont();
 		modelBatch = new ModelBatch();
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, .4f, .4f, .4f, 1f));
@@ -53,19 +62,19 @@ public class NordicGameJam14 implements ApplicationListener {
         model = loader.loadModel(Gdx.files.internal("player/ship.obj"));
         bankmodel = loader.loadModel(Gdx.files.internal("player/ship.obj"));
         
-        /*banks.add(new Bank(bankmodel, new LooperList()
+        banks.add(new Bank(bankmodel, new LooperList()
         .add(new LooperMusic("Bank1/birds_twitter.mp3"))
         .add(new LooperMusic("Bank1/dog_barking.mp3"))
         .add(new LooperMusic("Bank1/bicycle_pass_by.mp3"))
         .add(new LooperMusic("Bank1/tools_1.mp3"))
-        ));*/
+        ));
         
-        /*banks.add(new Bank(bankmodel, new LooperList()
+        banks.add(new Bank(bankmodel, new LooperList()
         .add(new LooperMusic("Bank2/walla.mp3"))
         .add(new LooperMusic("Bank2/street_musician.mp3"))
         .add(new LooperMusic("Bank2/tool_2.mp3"))
         .add(new LooperMusic("Bank2/ambulance.mp3"))
-        ));*/
+        ));
         
         
         banks.add(new Bank(bankmodel, new LooperList()
@@ -92,6 +101,8 @@ public class NordicGameJam14 implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+		fontbatch.dispose();
+		font.dispose();
 		modelBatch.dispose();
 		model.dispose();
 		bankmodel.dispose();
@@ -131,18 +142,28 @@ public class NordicGameJam14 implements ApplicationListener {
 	boolean locktouch = false;
 	
 	@Override
-	public void render() {		
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	public void render() {
+		int windowwidth = Gdx.graphics.getWidth();
+		int windowheight = Gdx.graphics.getHeight();
+		Gdx.gl.glViewport(0, 0, windowwidth, windowheight);
+		Gdx.gl.glClearColor(1f, 1f, 1f, 1.0f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
 		float dt = Gdx.graphics.getDeltaTime();
 		
-		for(Bank bank : banks) {
-			if( bank.update(dt, playerpos) ) {
-				hasplayer = false;
-				locktouch = true;
-				// System.out.println("Loosing player");
+		if( attract < Constants.ATTRACTTIME ) {
+			if( attract > 0) {
+				attract -= dt;
+			}
+		}
+		
+		if( attract < 0.0f ) {
+			for(Bank bank : banks) {
+				if( bank.update(dt, playerpos) ) {
+					hasplayer = false;
+					locktouch = true;
+					// System.out.println("Loosing player");
+				}
 			}
 		}
 		
@@ -178,6 +199,7 @@ public class NordicGameJam14 implements ApplicationListener {
 		float bgvol = 1.0f;
 		int level = 0;
 		for(Bank b:banks) {
+			// screw accessors, direct access ftw
 			level = Math.max(level, b.level);
 			if( b.pausetimer > 0 ) {
 			}
@@ -194,23 +216,45 @@ public class NordicGameJam14 implements ApplicationListener {
 		noise.setVolume(noisevol);
 		rumble.setVolume(noisevol);
 		
-		if( Gdx.input.isTouched(0) && hasplayer) {
-			playerpos = target;
-			bouncetimer = 0.0f;
-			lastseenplayer = new Vector3(playerpos);
+		if( attract >= 0) {
+			if( Gdx.input.isTouched(0) && attract >= Constants.ATTRACTTIME ) {
+				attract = Constants.ATTRACTTIME - 0.1f;
+			}
 		}
 		else {
-			bouncetimer += dt * Constants.BOUNCESPEED;
-			if(bouncetimer > 1) bouncetimer = 1;
-			hasplayer = false;
-			if( Gdx.input.isTouched(0) == false ) {
-				locktouch = false;
+			if( Gdx.input.isTouched(0) && hasplayer) {
+				playerpos = target;
+				bouncetimer = 0.0f;
+				lastseenplayer = new Vector3(playerpos);
 			}
-			playerpos = new Vector3(lastseenplayer);
-			playerpos.scl( 1-Elastic.easeOut(bouncetimer, 0, 1, 1) );
- 		}
+			else {
+				bouncetimer += dt * Constants.BOUNCESPEED;
+				if(bouncetimer > 1) bouncetimer = 1;
+				hasplayer = false;
+				if( Gdx.input.isTouched(0) == false ) {
+					locktouch = false;
+				}
+				playerpos = new Vector3(lastseenplayer);
+				playerpos.scl( 1-Elastic.easeOut(bouncetimer, 0, 1, 1) );
+	 		}
+		}
 		
 		instance.transform.setTranslation(playerpos);
+		
+		Matrix4 normalProjection = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight());
+		fontbatch.setProjectionMatrix(normalProjection);
+		fontbatch.begin();
+		font.setColor(0,0,0,1);
+		font.setScale(2);
+		font.draw(fontbatch, "a-HARMONY", windowwidth*0.3f, (Back.easeOut(KeepWithin(0, attract / Constants.ATTRACTTIME, 1), 0, windowheight-font.getLineHeight(), 1)));
+		
+		font.setScale(1);
+		font.draw(fontbatch, "Gustav Jansson, @sirGustav", windowwidth*0.3f, (Back.easeOut(KeepWithin(0, attract / Constants.ATTRACTTIME, 1), 0, windowheight-font.getLineHeight()*4, 1)));
+		font.draw(fontbatch, "Nicolai Junge, @NicolaiJunge", windowwidth*0.3f, (Back.easeOut(KeepWithin(0, attract / Constants.ATTRACTTIME, 1), 0, windowheight-font.getLineHeight()*5, 1)));
+		font.draw(fontbatch, "Oscar Hallberg", windowwidth*0.3f, (Back.easeOut(KeepWithin(0, attract / Constants.ATTRACTTIME, 1), 0, windowheight-font.getLineHeight()*6, 1)));
+		font.draw(fontbatch, "Wilson Almeida, @ongaku_mm", windowwidth*0.3f, (Back.easeOut(KeepWithin(0, attract / Constants.ATTRACTTIME, 1), 0, windowheight-font.getLineHeight()*7, 1)));
+		
+		fontbatch.end();
 	}
 
 	@Override
