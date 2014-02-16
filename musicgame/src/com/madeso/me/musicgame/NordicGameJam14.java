@@ -59,7 +59,7 @@ public class NordicGameJam14 implements ApplicationListener {
 		// model = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
 		
 		ObjLoader loader = new ObjLoader();
-        model = loader.loadModel(Gdx.files.internal("player/playerring.obj"));
+        model = loader.loadModel(Gdx.files.internal("player/playerRing.obj"));
         bankmodel = loader.loadModel(Gdx.files.internal("player/mid.obj"));
         
         banks.add(new Bank(bankmodel, new LooperList()
@@ -247,7 +247,7 @@ public class NordicGameJam14 implements ApplicationListener {
 		fontbatch.begin();
 		font.setColor(0,0,0,1);
 		font.setScale(2);
-		font.draw(fontbatch, "a-HARMONY", windowwidth*0.3f, (Back.easeOut(KeepWithin(0, attract / Constants.ATTRACTTIME, 1), 0, windowheight-font.getLineHeight(), 1)));
+		font.draw(fontbatch, "PRIVACY", windowwidth*0.3f, (Back.easeOut(KeepWithin(0, attract / Constants.ATTRACTTIME, 1), 0, windowheight-font.getLineHeight(), 1)));
 		
 		font.setScale(1);
 		font.draw(fontbatch, "Gustav Jansson, @sirGustav", windowwidth*0.3f, (Back.easeOut(KeepWithin(0, attract / Constants.ATTRACTTIME, 1), 0, windowheight-font.getLineHeight()*4, 1)));
