@@ -18,6 +18,7 @@ public final class Constants {
 	public static final float PLAYERBASESCALE = 0.025f;
 	public static final float PLAYERSCALE = 0.1f;
 	
+	public static final float BANKSIZE = 0.10f;
 	public static final float ATTRACTTIME = 2.0f; // fade time to game
 	public static final float BANKSCALE = 0.9f; // the bank circle world scale
 	public static final float BANKSPEED = 0.40f; // the maximum amount that a bank can have

@@ -70,6 +70,7 @@ public class Bank implements Disposable {
 		pos.y = (float) Math.sin(angle) * Constants.WORLDHEIGHT * Constants.BANKSCALE;
 		instance.transform.setToRotation(0, 0, 1, (float) (spin * 360));
 		instance.transform.setTranslation(pos);
+		instance.transform.scale(Constants.BANKSIZE, Constants.BANKSIZE, Constants.BANKSIZE);
 		if( pausetimer < 0.0f ) {
 			lifetimer += dt;
 			if( lifetimer > Constants.BANKLIFE) {

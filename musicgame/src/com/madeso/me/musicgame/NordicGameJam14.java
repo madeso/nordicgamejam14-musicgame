@@ -60,7 +60,7 @@ public class NordicGameJam14 implements ApplicationListener {
 		
 		ObjLoader loader = new ObjLoader();
         model = loader.loadModel(Gdx.files.internal("player/playerring.obj"));
-        bankmodel = loader.loadModel(Gdx.files.internal("player/playersphere.obj"));
+        bankmodel = loader.loadModel(Gdx.files.internal("player/mid.obj"));
         
         banks.add(new Bank(bankmodel, new LooperList()
         .add(new LooperMusic("Bank1/birds_twitter.mp3"))
