@@ -27,7 +27,9 @@ public class NordicGameJam14 implements ApplicationListener {
 	public CameraInputController inputController;
 	public ModelBatch modelBatch;
 	public Model model;
-	public Model bankmodel;
+	public Model bankmodel1;
+	public Model bankmodel2;
+	public Model bankmodel3;
 	public ModelInstance instance;
 	public Environment environment;
 	
@@ -60,16 +62,18 @@ public class NordicGameJam14 implements ApplicationListener {
 		
 		ObjLoader loader = new ObjLoader();
         model = loader.loadModel(Gdx.files.internal("player/playerRing.obj"));
-        bankmodel = loader.loadModel(Gdx.files.internal("player/mid.obj"));
+        bankmodel1 = loader.loadModel(Gdx.files.internal("player/low.obj"));
+        bankmodel2 = loader.loadModel(Gdx.files.internal("player/mid.obj"));
+        bankmodel3 = loader.loadModel(Gdx.files.internal("player/high.obj"));
         
-        banks.add(new Bank(bankmodel, new LooperList()
+        banks.add(new Bank(bankmodel1, new LooperList()
         .add(new LooperMusic("Bank1/birds_twitter.mp3"))
         .add(new LooperMusic("Bank1/dog_barking.mp3"))
         .add(new LooperMusic("Bank1/bicycle_pass_by.mp3"))
         .add(new LooperMusic("Bank1/tools_1.mp3"))
         ));
         
-        banks.add(new Bank(bankmodel, new LooperList()
+        banks.add(new Bank(bankmodel2, new LooperList()
         .add(new LooperMusic("Bank2/walla.mp3"))
         .add(new LooperMusic("Bank2/street_musician.mp3"))
         .add(new LooperMusic("Bank2/tool_2.mp3"))
@@ -77,7 +81,7 @@ public class NordicGameJam14 implements ApplicationListener {
         ));
         
         
-        banks.add(new Bank(bankmodel, new LooperList()
+        banks.add(new Bank(bankmodel3, new LooperList()
         .add(new LooperMusic("Bank3/highway_sound.mp3"))
         .add(new LooperMusic("Bank3/bus_pass_by.mp3"))
         .add(new LooperMusic("Bank3/motor_cycle.mp3"))
@@ -105,7 +109,9 @@ public class NordicGameJam14 implements ApplicationListener {
 		font.dispose();
 		modelBatch.dispose();
 		model.dispose();
-		bankmodel.dispose();
+		bankmodel1.dispose();
+		bankmodel2.dispose();
+		bankmodel3.dispose();
 		background.dispose();
 		noise.dispose();
 		rumble.dispose();

@@ -13,7 +13,7 @@ public final class Constants {
 	public static final float STARTTIME = 3.0f;
 	public static final float STARTRANGE = 3.0f;
 	public static final float SPINTIMES = 0.5f;
-	public static final float SPINTIMES_ACTIVE = 2.5f;
+	public static final float SPINTIMES_ACTIVE = 2.0f;
 	
 	public static final float PLAYERBASESCALE = 0.025f;
 	public static final float PLAYERSCALE = 0.1f;
